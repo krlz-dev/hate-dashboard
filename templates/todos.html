@@ -1,0 +1,42 @@
+<div id="todos-list">
+    {{if .todos}}
+        <ul class="divide-y">
+            {{range .todos}}
+                <li class="py-3 flex items-center justify-between transition-opacity duration-300" 
+                    x-show="showCompleted || !{{.Completed}}"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 transform scale-95"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 transform scale-100"
+                    x-transition:leave-end="opacity-0 transform scale-95">
+                    <div class="flex items-center space-x-3">
+                        <button 
+                            class="w-6 h-6 border rounded-full flex items-center justify-center {{if .Completed}}bg-green-500 border-green-500 text-white{{else}}border-gray-300{{end}} transition-colors duration-200"
+                            hx-put="/todos/{{.ID}}/toggle"
+                            hx-target="#todos-list"
+                            hx-swap="outerHTML"
+                        >
+                            {{if .Completed}}✓{{end}}
+                        </button>
+                        <span class="{{if .Completed}}line-through text-gray-500{{end}} transition-all duration-200">
+                            {{.Task}}
+                        </span>
+                    </div>
+                    <button 
+                        class="text-red-500 hover:text-red-700 focus:outline-none transition-colors duration-200"
+                        hx-delete="/todos/{{.ID}}"
+                        hx-target="#todos-list"
+                        hx-swap="outerHTML"
+                        @mouseenter="$el.classList.add('scale-125')"
+                        @mouseleave="$el.classList.remove('scale-125')"
+                    >
+                        &times;
+                    </button>
+                </li>
+            {{end}}
+        </ul>
+    {{else}}
+        <p class="text-center text-gray-500 py-4">No tasks yet! Add one above.</p>
+    {{end}}
+</div>
